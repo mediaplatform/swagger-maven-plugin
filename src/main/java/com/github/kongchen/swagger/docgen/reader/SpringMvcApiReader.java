@@ -318,18 +318,22 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
         for (Method method : methods) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                String path = "";
+                List<String> paths = new ArrayList<String>();
                 if (requestMapping.value() != null && requestMapping.value().length != 0) {
-                    path = generateFullPath(requestMapping.value()[0]);
+                    for (String requestMappingValue : requestMapping.value()) {
+                        paths.add(generateFullPath(requestMappingValue));
+                    }
                 } else {
-                    path = resourcePath;
+                    paths.add(resourcePath);
                 }
-                if (apiMethodMap.containsKey(path)) {
-                    apiMethodMap.get(path).add(method);
-                } else {
-                    List<Method> ms = new ArrayList<Method>();
-                    ms.add(method);
-                    apiMethodMap.put(path, ms);
+                for (String path : paths) {
+                    if (apiMethodMap.containsKey(path)) {
+                        apiMethodMap.get(path).add(method);
+                    } else {
+                        List<Method> ms = new ArrayList<Method>();
+                        ms.add(method);
+                        apiMethodMap.put(path, ms);
+                    }
                 }
             }
         }
