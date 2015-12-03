@@ -23,12 +23,29 @@
         </license>
     </licenses>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>MediaPlatform Nexus</name>
+            <url>http://mediaplatform.com:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus</id>
+            <name>MediaPlatform Nexus</name>
+            <url>http://mediaplatform.com:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <scm>
-        <connection>scm:git:git@github.com:kongchen/swagger-maven-plugin.git</connection>
-        <url>scm:git:git@github.com:kongchen/swagger-maven-plugin.git</url>
-        <developerConnection>scm:git:git@github.com:kongchen/swagger-maven-plugin.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <!-- Replace the connection below with your project connection -->
+        <connection>scm:git:git://github.com/mediaplatform/swagger-maven-plugin.git</connection>
+    </scm>
+
+    <!--<scm>-->
+        <!--<connection>scm:git:git@github.com:kongchen/swagger-maven-plugin.git</connection>-->
+        <!--<url>scm:git:git@github.com:kongchen/swagger-maven-plugin.git</url>-->
+        <!--<developerConnection>scm:git:git@github.com:kongchen/swagger-maven-plugin.git</developerConnection>-->
+      <!--<tag>HEAD</tag>-->
+  <!--</scm>-->
 
     <developers>
         <developer>
@@ -268,17 +285,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>sonatype-snapshot</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
