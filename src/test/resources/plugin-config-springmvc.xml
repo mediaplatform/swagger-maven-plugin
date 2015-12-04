@@ -52,6 +52,9 @@
                             <outputPath>${basedir}/generated/document-spring.html</outputPath>
                             <outputFormats>json</outputFormats>
                             <swaggerDirectory>${basedir}/generated/swagger-ui-spring</swaggerDirectory>
+                            <requestMappingRegexList>
+                                <value>.*</value>
+                            </requestMappingRegexList>
                             <swaggerUIDocBasePath>http://www.example.com/restapi/doc</swaggerUIDocBasePath>
                             <modelSubstitute>/override.map</modelSubstitute>
                             <apiModelPropertyAccessExclusions>

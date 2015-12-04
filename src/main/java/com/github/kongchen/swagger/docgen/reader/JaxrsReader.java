@@ -36,7 +36,7 @@ public class JaxrsReader extends AbstractReader implements ClassSwaggerReader {
     }
 
     @Override
-    public Swagger read(Set<Class<?>> classes) {
+    public Swagger read(Set<Class<?>> classes, List<String> requestMappingRegexList) {
         for (Class cls : classes)
             read(cls);
         return swagger;

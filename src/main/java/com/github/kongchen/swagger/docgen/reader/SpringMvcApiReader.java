@@ -33,20 +33,20 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
     }
 
     @Override
-    public Swagger read(Set<Class<?>> classes) throws GenerateException {
+    public Swagger read(Set<Class<?>> classes, List<String> requestMappingRegexList) throws GenerateException {
         //relate all methods to one base request mapping if multiple controllers exist for that mapping
         //get all methods from each controller & find their request mapping
         //create map - resource string (after first slash) as key, new SpringResource as value
         Map<String, SpringResource> resourceMap = generateResourceMap(classes);
         for (String str : resourceMap.keySet()) {
             SpringResource resource = resourceMap.get(str);
-            read(resource);
+            read(resource, requestMappingRegexList);
         }
 
         return swagger;
     }
 
-    public Swagger read(SpringResource resource) {
+    public Swagger read(SpringResource resource, List<String> requestMappingRegexList) {
         if (swagger == null) {
             swagger = new Swagger();
         }
@@ -79,7 +79,7 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
         resourcePath = resource.getControllerMapping();
 
         //collect api from method with @RequestMapping
-        Map<String, List<Method>> apiMethodMap = collectApisByRequestMapping(methods);
+        Map<String, List<Method>> apiMethodMap = collectApisByRequestMapping(methods, requestMappingRegexList);
 
         for (String path : apiMethodMap.keySet()) {
             for (Method method : apiMethodMap.get(path)) {
@@ -313,7 +313,7 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
 
     }
 
-    private Map<String, List<Method>> collectApisByRequestMapping(List<Method> methods) {
+    private Map<String, List<Method>> collectApisByRequestMapping(List<Method> methods, List<String> requestMappingRegexList) {
         Map<String, List<Method>> apiMethodMap = new HashMap<String, List<Method>>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
@@ -327,18 +327,29 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
                     paths.add(resourcePath);
                 }
                 for (String path : paths) {
-                    if (apiMethodMap.containsKey(path)) {
-                        apiMethodMap.get(path).add(method);
-                    } else {
-                        List<Method> ms = new ArrayList<Method>();
-                        ms.add(method);
-                        apiMethodMap.put(path, ms);
+                    if (isPathMatched(path, requestMappingRegexList)) {
+                        if (apiMethodMap.containsKey(path)) {
+                            apiMethodMap.get(path).add(method);
+                        } else {
+                            List<Method> ms = new ArrayList<Method>();
+                            ms.add(method);
+                            apiMethodMap.put(path, ms);
+                        }
                     }
                 }
             }
         }
 
         return apiMethodMap;
+    }
+
+    private boolean isPathMatched(String path, List<String> requestMappingRegexList) {
+        for (String regex : requestMappingRegexList) {
+            if (path.matches(regex)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String generateFullPath(String path) {

@@ -65,6 +65,9 @@ public class ApiSource {
     @Parameter
     private String swaggerDirectory;
 
+    @Parameter
+    private List<String> requestMappingRegexList;
+
     /**
      * <code>attachSwaggerArtifact</code> triggers plugin execution to attach the generated
      * swagger.json to Maven session for deployment purpose.  The attached classifier
@@ -309,6 +312,14 @@ public class ApiSource {
     public void setUseJAXBAnnotationProcessor(boolean useJAXBAnnotationProcessor)
     {
         this.useJAXBAnnotationProcessor = useJAXBAnnotationProcessor;
+    }
+
+    public List<String> getRequestMappingRegexList() {
+        return requestMappingRegexList;
+    }
+
+    public void setRequestMappingRegexList(List<String> requestMappingRegexList) {
+        this.requestMappingRegexList = requestMappingRegexList;
     }
 }
 

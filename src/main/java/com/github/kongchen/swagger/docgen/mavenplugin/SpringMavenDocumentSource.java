@@ -44,7 +44,7 @@ public class SpringMavenDocumentSource extends AbstractDocumentSource {
         
         SpringMvcApiReader reader = new SpringMvcApiReader(swagger, LOG);
         reader.setTypesToSkip(this.typesToSkip);
-        swagger = reader.read(apiSource.getValidClasses());
+        swagger = reader.read(apiSource.getValidClasses(), apiSource.getRequestMappingRegexList());
         
         if(apiSource.getSecurityDefinitions() != null) {
             for (SecurityDefinition sd : apiSource.getSecurityDefinitions()) {

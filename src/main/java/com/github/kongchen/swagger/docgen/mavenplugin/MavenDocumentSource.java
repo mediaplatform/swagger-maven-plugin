@@ -43,7 +43,7 @@ public class MavenDocumentSource extends AbstractDocumentSource {
         
         JaxrsReader reader = new JaxrsReader(swagger, LOG);
         reader.setTypesToSkip(this.typesToSkip);
-        swagger = reader.read(apiSource.getValidClasses());
+        swagger = reader.read(apiSource.getValidClasses(), apiSource.getRequestMappingRegexList());
 
         if(apiSource.getSecurityDefinitions() != null) {
             for (SecurityDefinition sd : apiSource.getSecurityDefinitions()) {
