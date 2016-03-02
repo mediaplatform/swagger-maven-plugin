@@ -220,7 +220,7 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
                             .headers(defaultResponseHeaders));
                 }
             } else if (!responseClass.equals(Void.class) && !"void".equals(responseClass.toString())) {
-                Map<String, Model> models = ModelConverters.getInstance().read(responseClass);
+                Map<String, Model> models = ModelConverters.getInstance().readAll(method.getGenericReturnType());
                 if (models.size() == 0) {
                     Property pp = ModelConverters.getInstance().readAsProperty(responseClass);
                     operation.response(200, new Response()
@@ -229,20 +229,17 @@ public class SpringMvcApiReader extends AbstractReader implements ClassSwaggerRe
                             .headers(defaultResponseHeaders));
                 }
                 for (String key : models.keySet()) {
-                    Property responseProperty = null;
-
-                    if ("list".equalsIgnoreCase(responseContainer))
-                        responseProperty = new ArrayProperty(new RefProperty().asDefault(key));
-                    else if ("map".equalsIgnoreCase(responseContainer))
-                        responseProperty = new MapProperty(new RefProperty().asDefault(key));
-                    else
-                        responseProperty = new RefProperty().asDefault(key);
-                    operation.response(200, new Response()
-                            .description("successful operation")
-                            .schema(responseProperty)
-                            .headers(defaultResponseHeaders));
                     swagger.model(key, models.get(key));
                 }
+                Property responseProperty = ModelConverters.getInstance().readAsProperty(method.getGenericReturnType());
+                if ("list".equalsIgnoreCase(responseContainer))
+                    responseProperty = new ArrayProperty(responseProperty);
+                else if ("map".equalsIgnoreCase(responseContainer))
+                    responseProperty = new MapProperty(responseProperty);
+                operation.response(200, new Response()
+                    .description("successful operation")
+                    .schema(responseProperty)
+                    .headers(defaultResponseHeaders));
                 models = ModelConverters.getInstance().readAll(responseClass);
                 for (String key : models.keySet()) {
                     swagger.model(key, models.get(key));
